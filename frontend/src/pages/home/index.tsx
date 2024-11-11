@@ -48,7 +48,7 @@ export default function Home() {
     useEffect(() => {
         if(latexExpression.length > 0 && window.MathJax) {
             setTimeout(()=> {
-                window.MathJax.Hun.Queue(["Typeset", window.MathJax.Hub]);
+                window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
             }, 0)
         }
     }, [latexExpression])
