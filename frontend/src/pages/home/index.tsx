@@ -6,28 +6,40 @@ import Draggable from 'react-draggable';
 
 import axios from 'axios';
 
+//Response interface (structure to returned as reponse)
 interface Response {
     expr : string;
     result : string;
     assign : boolean;
 }
 
+//In TS, interface is a way to define the structure of an object
+
+//Interface to define the structure of the GeneratedResult
 interface GeneratedResult{
     expression : string;
     answer : string;
 }
 
+
+//Default React export function
 export default function Home() {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const[isDrawing, setIsDrawing] = useState(false);
-    const[color, setColor] = useState('rgb(255,255,255)');
+    const canvasRef = useRef<HTMLCanvasElement>(null);  //useRef(React hook for mutable reference object) & null(intial valuse)
+
+    // const [value, setValue] => Array destructuring (To unpack values from array or properties from objects into distinct variables)
+    const[isDrawing, setIsDrawing] = useState(false);   //useState (React hook) => On render (isDrawing = false)
+    const[color, setColor] = useState('rgb(255,255,255)');  //'rgb(255,255,255)' => String intial value
     const[reset, setReset] = useState(false);
-    const[result, setResult] = useState<GeneratedResult>();
+    const[result, setResult] = useState<GeneratedResult>(); //GeneratedResult> specifies that the state variable result will hold an object of type GeneratedResult. And the initial value is undefined.
     const[latexExpression, setLatexExpression] = useState<Array<string>>([]);
     const[latextPosition, setLatexPosition] = useState({x:10, y:200});
-    const[dictOfVars, setDictOfVars] = useState({});
-
-
+    const[dictOfVars, setDictOfVars] = useState({});    //Initial Value: Empty Object
+    
+    //Arrow function () => {}
+    //Syntax : (Parameters) => {Operations}
+    
+    //Use Effect Hook (React Hook for handling side effects): Runs when the dependencies change.
+    //Use Effect Syntax: useEffect(() => {Operations}, [Dependencies])
     useEffect(() => {
         if(reset){
             resetCanvas();
@@ -192,58 +204,62 @@ export default function Home() {
 
     return (
         <>
-            
-            <div className='grid grid-cols-3 gap-2 m-3'>
-                <Button
-                    onClick={() => setReset(true)}
-                    className='z-20 bg-red-500 text-white hover:bg-gray-700 w-16 mr-auto px-4 '
-                    variant='default'
-                    // color='black'
-                >
-                    Reset
-                </Button>
-                <Group className='z-20'>
-                    {SWATCHES.map((swatchColor: string) => (
-                        <ColorSwatch
+            <div className='z-20'>
+                <div className='grid grid-cols-3 gap-2 m-3'>
+                    <Button
+                        onClick={() => setReset(true)}
+                        className='z-20 bg-red-500 text-white hover:bg-gray-700 w-16 mr-auto px-4 '
+                        variant='default'
+                        // color='black'
+                        >
+                        Reset
+                    </Button>
+                    <Group className='z-20'>
+                        {SWATCHES.map((swatchColor: string) => (
+                            <ColorSwatch
                             key={swatchColor}
                             color={swatchColor}
                             onClick={()=>setColor(swatchColor)}
                             />
-                    ))}
-                </Group>
-                <Button
-                    onClick={sendData}
-                    className='z-20 bg-green-500 text-white hover:bg-gray-700 w-16 ml-auto'
-                    variant='default'
-                    color='black'
-                >
-                    Run
-                </Button>
+                        ))}
+                    </Group>
+                    <Button
+                        onClick={sendData}
+                        className='z-20 bg-green-500 text-white hover:bg-gray-700 w-16 ml-auto'
+                        variant='default'
+                        color='black'
+                        >
+                        Run
+                    </Button>
+                </div>
             </div>
-            <canvas
-                ref = {canvasRef}
-                id='canvas'
-                className='absolute top-0 left-0 w-full h-full bg-black'
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseOut={stopDrawing}
-                onMouseUp={stopDrawing}
-            />
+            <div>
 
-            {latexExpression && latexExpression.map((latex, index) => (
-                <Draggable
+                <canvas
+                    ref = {canvasRef}
+                    id='canvas'
+                    className='absolute top-0 left-0 w-full h-full bg-black'
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseOut={stopDrawing}
+                    onMouseUp={stopDrawing}
+                    />
+
+                {latexExpression && latexExpression.map((latex, index) => (
+                    <Draggable
                     key={index}
                     defaultPosition={latextPosition}
                     onStop={(e, data) => setLatexPosition({x:data.x, y:data.y})}
-                >
-                    <div className='absolute text-white'>
-                   
-                        <div className='latext-content'>
-                            {latex}
+                    >
+                        <div className='absolute text-white'>
+                    
+                            <div className='latext-content'>
+                                {latex}
+                            </div>
                         </div>
-                     </div>
-                </Draggable>
-            ))}
+                    </Draggable>
+                ))}
+            </div>
         </>
     );
 }
