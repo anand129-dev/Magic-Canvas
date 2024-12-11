@@ -4,6 +4,7 @@ import { ColorSwatch, Group } from "@mantine/core";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider"
 import Draggable from "react-draggable";
+import React from 'react';  // Add this import
 
 import axios from "axios";
 
